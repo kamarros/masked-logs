@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Ready-to-use configuration: masked console output on the root logger (level INFO).
+      - text format by default,
+      - JSON format when the `json-logs` Spring profile is active.
+
+    Usage (logback-spring.xml):
+        <configuration>
+            <include resource="pl/apilia/logging/masking/logback/masking-base.xml"/>
+        </configuration>
+-->
+<included>
+    <include resource="pl/apilia/logging/masking/logback/masking-defaults.xml"/>
+
+    <springProfile name="!json-logs">
+        <include resource="pl/apilia/logging/masking/logback/masking-console-appender.xml"/>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="json-logs">
+        <include resource="pl/apilia/logging/masking/logback/masking-json-console-appender.xml"/>
+        <root level="INFO">
+            <appender-ref ref="JSON_CONSOLE"/>
+        </root>
+    </springProfile>
+</included>

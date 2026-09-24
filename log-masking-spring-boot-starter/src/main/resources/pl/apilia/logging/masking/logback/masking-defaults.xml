@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Log masking defaults - include in logback-spring.xml INSTEAD of Spring Boot's defaults.xml (it is included below).
+
+    - maps `apilia.logging.masking.*` Spring properties to Logback context properties read by the masking components,
+    - registers %maskedMsg and %maskedEx conversion words,
+    - defines masked default CONSOLE_LOG_PATTERN / FILE_LOG_PATTERN; `logging.pattern.console` / `logging.pattern.file`
+      still take precedence and must then use %maskedMsg / %maskedEx themselves.
+
+    The defaultValue attributes must stay in sync with MaskingSettings.defaults().
+-->
+<included>
+    <springProperty scope="context" name="LOG_MASKING_ENABLED"
+                    source="apilia.logging.masking.enabled" defaultValue="true"/>
+    <springProperty scope="context" name="LOG_MASKING_SANITIZE_CONTROL_CHARACTERS"
+                    source="apilia.logging.masking.sanitize-control-characters" defaultValue="true"/>
+    <springProperty scope="context" name="LOG_MASKING_MAX_MESSAGE_LENGTH"
+                    source="apilia.logging.masking.max-message-length" defaultValue="50000"/>
+    <springProperty scope="context" name="LOG_MASKING_CREDENTIALS"
+                    source="apilia.logging.masking.rules.credentials" defaultValue="true"/>
+    <springProperty scope="context" name="LOG_MASKING_CARD_NUMBERS"
+                    source="apilia.logging.masking.rules.card-numbers" defaultValue="true"/>
+    <springProperty scope="context" name="LOG_MASKING_BANK_ACCOUNTS"
+                    source="apilia.logging.masking.rules.bank-accounts" defaultValue="true"/>
+    <springProperty scope="context" name="LOG_MASKING_PESEL"
+                    source="apilia.logging.masking.rules.pesel" defaultValue="true"/>
+    <springProperty scope="context" name="LOG_MASKING_PESEL_MODE"
+                    source="apilia.logging.masking.rules.pesel-mode" defaultValue="FULL"/>
+    <springProperty scope="context" name="LOG_MASKING_EMAILS"
+                    source="apilia.logging.masking.rules.emails" defaultValue="true"/>
+    <springProperty scope="context" name="LOG_MASKING_PHONE_NUMBERS"
+                    source="apilia.logging.masking.rules.phone-numbers" defaultValue="true"/>
+    <springProperty scope="context" name="LOG_MASKING_ADDITIONAL_SENSITIVE_KEYS"
+                    source="apilia.logging.masking.additional-sensitive-keys" defaultValue=""/>
+
+    <conversionRule conversionWord="maskedMsg" class="pl.apilia.logging.masking.MaskingMessageConverter"/>
+    <conversionRule conversionWord="maskedEx" class="pl.apilia.logging.masking.MaskingThrowableConverter"/>
+
+    <!-- Spring Boot defaults with %m / %wEx replaced; Boot's defaults.xml below keeps these values -->
+    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd'T'HH:mm:ss.SSSXXX}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}){} %clr(${PID:-}){magenta} %clr(--- %esb(){APPLICATION_NAME}%esb{APPLICATION_GROUP}[%15.15t] ${LOG_CORRELATION_PATTERN:-}){faint}%clr(%-40.40logger{39}){cyan} %clr(:){faint} %maskedMsg%n%maskedEx}"/>
+    <property name="FILE_LOG_PATTERN" value="${FILE_LOG_PATTERN:-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd'T'HH:mm:ss.SSSXXX}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:-} --- %esb(){APPLICATION_NAME}%esb{APPLICATION_GROUP}[%t] ${LOG_CORRELATION_PATTERN:-}%-40.40logger{39} : %maskedMsg%n%maskedEx}"/>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+</included>

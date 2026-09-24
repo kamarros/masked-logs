@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- JSON console appender "JSON_CONSOLE" (logstash-logback-encoder, Jackson 3) - requires masking-defaults.xml -->
+<included>
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${CONSOLE_LOG_THRESHOLD}</level>
+        </filter>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <!-- do not copy context properties (LOG_MASKING_* etc.) into every log entry -->
+            <includeContext>false</includeContext>
+            <!-- logstash-logback-encoder 9.x syntax; <jsonGeneratorDecorator> was used up to 8.x -->
+            <decorator class="pl.apilia.logging.masking.SensitiveDataJsonGeneratorDecorator"/>
+        </encoder>
+    </appender>
+</included>
